@@ -4,3 +4,4 @@ transformers
 scikit-learn
 numpy
 pypdf
+pdfminer.six

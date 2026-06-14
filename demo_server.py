@@ -356,14 +356,36 @@ def compact_text(text: str) -> str:
 
 def extract_pdf_text(data: bytes) -> str:
     ensure_document_packages_path()
+    errors: list[str] = []
     try:
         from pypdf import PdfReader
-    except ImportError as exc:
-        raise ValueError("PDF parsing requires pypdf. Bundled document dependencies were not found.") from exc
+        reader = PdfReader(io.BytesIO(data))
+        pages = [page.extract_text() or "" for page in reader.pages]
+        text = compact_text("\n".join(pages))
+        if text:
+            return text
+        errors.append("pypdf extracted no text")
+    except Exception as exc:
+        errors.append(f"pypdf failed: {exc}")
 
-    reader = PdfReader(io.BytesIO(data))
-    pages = [page.extract_text() or "" for page in reader.pages]
-    return compact_text("\n".join(pages))
+    try:
+        from pdfminer.high_level import extract_text
+
+        text = compact_text(extract_text(io.BytesIO(data)) or "")
+        if text:
+            return text
+        errors.append("pdfminer extracted no text")
+    except ImportError:
+        errors.append("pdfminer.six is not installed")
+    except Exception as exc:
+        errors.append(f"pdfminer failed: {exc}")
+
+    detail = "; ".join(errors)
+    raise ValueError(
+        "Could not extract readable text from the PDF. "
+        "The file may be scanned/image-only, protected, or malformed. "
+        f"Details: {detail}"
+    )
 
 
 def extract_docx_text(data: bytes) -> str:
