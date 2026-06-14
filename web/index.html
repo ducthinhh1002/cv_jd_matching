@@ -1,0 +1,111 @@
+<!doctype html>
+<html lang="vi">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>CV-JD Matching Demo</title>
+    <link rel="stylesheet" href="/styles.css" />
+  </head>
+  <body>
+    <main class="shell">
+      <section class="hero">
+        <div>
+          <p class="eyebrow">CV-JD matching</p>
+          <h1>Rank CV theo Job Description</h1>
+          <p class="subhead">
+            Demo dùng semantic embedding, IT skill coverage, role alignment, seniority và hard-constraint diagnostics
+            để đề xuất ứng viên nên phỏng vấn hay không.
+          </p>
+        </div>
+        <div class="metric-card">
+          <span class="metric-label">Output</span>
+          <strong>Ranking + Recommendation</strong>
+          <small>Strong recommend / Consider / Do not recommend</small>
+        </div>
+      </section>
+
+      <section class="workspace">
+        <form id="match-form" class="panel input-panel">
+          <div class="pdf-upload-card">
+            <div>
+              <p class="eyebrow">Upload document</p>
+              <h2>Upload JD/CV files</h2>
+              <p>
+                Upload PDF, DOCX, or TXT files, or paste content directly into the text boxes below.
+              </p>
+            </div>
+            <div class="pdf-upload-grid">
+              <label class="file-drop">
+                <span>JD file</span>
+                <input id="jd-pdf-input" type="file" accept="application/pdf,.pdf,.docx,.txt,text/plain,application/vnd.openxmlformats-officedocument.wordprocessingml.document" />
+                <strong id="jd-pdf-name">Chưa chọn file</strong>
+              </label>
+              <label class="file-drop">
+                <span>CV files</span>
+                <input id="cv-pdf-input" type="file" accept="application/pdf,.pdf,.docx,.txt,text/plain,application/vnd.openxmlformats-officedocument.wordprocessingml.document" multiple />
+                <strong id="cv-pdf-name">Chưa chọn file</strong>
+              </label>
+            </div>
+          </div>
+
+          <label>
+            <span>Job Description</span>
+            <textarea id="jd-input" required spellcheck="false">Senior Python Backend Engineer
+We need a senior backend engineer with Python, FastAPI, PostgreSQL, Docker, AWS, REST API experience. Kubernetes and CI/CD are preferred. At least 3 years of experience.</textarea>
+          </label>
+
+          <label>
+            <span>CV list</span>
+            <textarea id="cv-input" required spellcheck="false">Candidate A
+Python backend developer with 5 years of experience building REST APIs using FastAPI and Django. Worked with PostgreSQL, Docker, AWS, Kubernetes and CI/CD pipelines.
+---CV---
+Candidate B
+Frontend engineer experienced in React, TypeScript, CSS, UI testing and design systems. Some Node.js exposure.
+---CV---
+Candidate C
+Data analyst with SQL, Tableau, Excel and Python scripting experience. Worked on reporting automation and dashboards.</textarea>
+          </label>
+
+          <div class="actions">
+            <button type="submit" id="rank-button">Run matching</button>
+            <button type="button" id="clear-button" class="secondary">Clear result</button>
+          </div>
+          <p class="hint">
+            Nhập nhiều CV bằng cách ngăn cách bằng dòng <code>---CV---</code>. Dòng đầu mỗi CV được dùng làm tên ứng viên.
+          </p>
+        </form>
+
+        <section class="panel result-panel">
+          <div class="result-header">
+            <div>
+              <p class="eyebrow">Result</p>
+              <h2 id="result-title">Chưa có kết quả</h2>
+            </div>
+            <div id="status-pill" class="status-pill idle">Idle</div>
+          </div>
+
+          <div class="result-controls">
+            <label class="threshold-control">
+              <span>Ngưỡng phỏng vấn: <strong id="threshold-value">62%</strong></span>
+              <input id="threshold-input" type="range" min="40" max="90" value="62" />
+            </label>
+            <label class="toggle-control">
+              <input id="shortlist-only" type="checkbox" />
+              <span>Chỉ hiện ứng viên đạt ngưỡng</span>
+            </label>
+            <div class="result-actions">
+              <button type="button" id="export-csv-button" class="secondary">Export CSV</button>
+              <button type="button" id="copy-shortlist-button" class="secondary">Copy shortlist</button>
+            </div>
+          </div>
+
+          <div id="summary" class="summary"></div>
+          <div id="results" class="results empty-state">
+            Nhập JD/CV rồi bấm Run matching để xem ranking.
+          </div>
+        </section>
+      </section>
+    </main>
+    <script src="/app.js"></script>
+  </body>
+</html>

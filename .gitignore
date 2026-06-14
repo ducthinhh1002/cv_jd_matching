@@ -10,6 +10,23 @@ __pycache__/
 venv/
 env/
 artifacts/
+data/
+external/
+job-recommendation/
+deploy_hf_repo_CVJD/
+deploy_hf_space/
+
+# Large/local datasets
+*.zip
+*.csv
+*.tsv
+*.jsonl
+*.pt
+
+# Generated office/export files
+*.docx
+*.pdf
+*.pptx
 
 .vscode/
 .idea/
