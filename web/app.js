@@ -336,6 +336,20 @@ form.addEventListener("submit", async (event) => {
   event.preventDefault();
   const useFiles = hasSelectedFiles();
   const resumes = parseResumes(cvInput.value);
+  const hasJobInput = Boolean(jdInput.value.trim() || jdPdfInput.files?.length);
+  const hasCvInput = Boolean(resumes.length || cvPdfInput.files?.length);
+  if (!hasJobInput) {
+    setStatus("Error", "error");
+    results.className = "results empty-state";
+    results.textContent = "Can nhap Job Description hoac upload JD file.";
+    return;
+  }
+  if (!hasCvInput) {
+    setStatus("Error", "error");
+    results.className = "results empty-state";
+    results.textContent = "Can nhap it nhat mot CV hoac upload CV file.";
+    return;
+  }
   if (!useFiles && !resumes.length) {
     setStatus("Error", "error");
     results.className = "results empty-state";
